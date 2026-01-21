@@ -10,7 +10,9 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Midi2Link">
+        android:theme="@style/Theme.Midi2Link"
+        tools:targetApi="36"
+        >
         <activity
             android:name=".MainActivity"
             android:exported="true"
