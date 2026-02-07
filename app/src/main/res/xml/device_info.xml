@@ -1,0 +1,5 @@
+<devices>
+    <device manufacturer="DKXL" product="Midi2Link" name="MIDI to Link">
+        <output-port name="output" />
+    </device>
+</devices>
