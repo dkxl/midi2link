@@ -33,7 +33,7 @@ class ForegroundService : Service() {
         val notification = NotificationCompat.Builder(this,
             channelId
         )
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setSmallIcon(R.mipmap.ic_launcher_round)
             .setContentTitle("MIDI 2 Link")
             .setContentText("Running")
             .build()
