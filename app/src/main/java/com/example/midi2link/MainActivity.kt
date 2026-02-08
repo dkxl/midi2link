@@ -1,13 +1,10 @@
 package com.example.midi2link
 
 import android.Manifest
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.ServiceConnection
 import android.os.Build
 import android.os.Bundle
-import android.os.IBinder
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -20,14 +17,16 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.LifecycleOwner
 import com.example.midi2link.ui.theme.Midi2LinkTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
@@ -46,6 +45,7 @@ private fun manageForegroundService(context: Context, action: String) {
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val lifecycleOwner = this
 
         enableEdgeToEdge()
         setContent {
@@ -56,7 +56,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     Scaffold {
                         title = "MIDI 2 Link"
-                        Midi2LinkMain(Modifier.padding(it))
+                        Midi2LinkMain(lifecycleOwner, Modifier.padding(it))
                     }
                 }
             }
@@ -66,11 +66,15 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun Midi2LinkMain(modifier: Modifier = Modifier) {
+fun Midi2LinkMain(
+    lifecycleOwner: LifecycleOwner,
+    modifier: Modifier = Modifier
+) {
     Column (
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.spacedBy(10.dp ),
+
     ) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             val notificationPermissionState = rememberPermissionState(
@@ -79,7 +83,7 @@ fun Midi2LinkMain(modifier: Modifier = Modifier) {
 
             if (notificationPermissionState.status.isGranted) {
                 Midi2LinkControls(modifier)
-                MainScreen(modifier)
+                MainScreen(lifecycleOwner, modifier)
             } else {
                 val textToShow = if (notificationPermissionState.status.shouldShowRationale) {
                     "Notification permission is required so this app can continue to run in the background" +
@@ -96,7 +100,7 @@ fun Midi2LinkMain(modifier: Modifier = Modifier) {
         } else {
             // Notification permissions not required until TIRAMISU
             Midi2LinkControls(modifier)
-            MainScreen(modifier)
+            MainScreen(lifecycleOwner, modifier)
         }
     }
 }
@@ -105,6 +109,10 @@ fun Midi2LinkMain(modifier: Modifier = Modifier) {
 @Composable
 fun Midi2LinkControls(modifier: Modifier = Modifier) {
     val context = LocalContext.current
+
+    /* TODO remember state of the service, and show/hide buttons accordingly.
+        Or publish to LiveDataRepository (but not the same one used for MIDI device)
+    */
 
     Button(onClick = {
         val action = ForegroundService.Action.START.toString()
@@ -121,55 +129,26 @@ fun Midi2LinkControls(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun MainScreen(
-    modifier: Modifier = Modifier,
-//    onServiceConnected: () -> Unit,
-//    onServiceDisconnecting: () -> Unit,
-//    onServiceError: () -> Unit,
-) {
-    var service: VirtualMidiDeviceService? by remember { mutableStateOf(null) }
+fun MainScreen(lifecycleOwner: LifecycleOwner, modifier: Modifier = Modifier){
 
-    val connection = remember {
-        object : ServiceConnection {
-            override fun onServiceConnected(name: ComponentName?, binder: IBinder?) {
-                val binderHelper = binder as? VirtualMidiDeviceService.BinderHelper
-                service = binderHelper?.getService()
-             //   onServiceConnected()
-            }
+    var lastMessage: String by remember { mutableStateOf("None") }
+    var inputPortOpen: Boolean by remember { mutableStateOf(false) }
 
-            override fun onServiceDisconnected(name: ComponentName?) {
-                service = null
-              //  onServiceError()
-            }
-        }
+    MidiDataRepository.lastMessage.observe(lifecycleOwner) { msg ->
+        lastMessage = msg
     }
 
-    val context = LocalContext.current
-
-    DisposableEffect(key1 = Unit) {
-        val intent = Intent(context, VirtualMidiDeviceService::class.java)
-
-        val bound = context.bindService(intent, connection, Context.BIND_AUTO_CREATE)
-        if (!bound) {
-         //   onServiceError()
-        }
-
-        onDispose {
-            context.unbindService(connection)
-           // onServiceDisconnecting()
-        }
+    MidiDataRepository.inputPortOpen.observe(lifecycleOwner) { state ->
+        inputPortOpen = state
     }
 
-    Text("Midi2Link Virtual MIDI Device")
+    Text( "Input Port Connected:", fontWeight = FontWeight.Bold)
+    Text( "$inputPortOpen")
 
-    if (service != null) {
-        Text(service!!.deviceInfo.toString())
 
-        Text("Receiver Started: ${service!!.isInputPortOpen()}")
+    Text("Last MIDI Message:", fontWeight = FontWeight.Bold)
 
-    } else {
-        Text("unable to bind")
-    }
+    Text(lastMessage)
 
 
 }
