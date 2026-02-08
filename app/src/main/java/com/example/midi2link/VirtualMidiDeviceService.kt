@@ -14,9 +14,10 @@ class VirtualMidiDeviceService : MidiDeviceService() {
     private val inputPortReceivers = arrayOf(midiReceiver)
     private val binder = BinderHelper()
 
-    override fun onBind(intent: Intent?): IBinder? {
-        return binder
-    }
+//    override fun onBind(intent: Intent?): IBinder? {
+//        super.onBind(intent)
+//        return binder
+//    }
 
     override fun onGetInputPortReceivers() = inputPortReceivers
 
