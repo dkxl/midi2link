@@ -2,8 +2,7 @@
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="960"
-    android:viewportHeight="960"
-    android:tint="?attr/colorControlNormal">
+    android:viewportHeight="960">
   <group android:scaleX="0.56"
       android:scaleY="0.56"
       android:translateX="211.2"
