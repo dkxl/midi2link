@@ -7,16 +7,11 @@ import android.media.midi.MidiReceiver
 import android.os.Binder
 import android.os.IBinder
 import android.util.Log
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import org.koin.androidx.scope.*
-
 
 class VirtualMidiDeviceService : MidiDeviceService() {
     private var receiverStarted = false
     private val midiReceiver: MidiReceiver = MyMidiReceiver()
     private val inputPortReceivers = arrayOf(midiReceiver)
-
     private val binder = BinderHelper()
 
     override fun onBind(intent: Intent?): IBinder? {
@@ -25,16 +20,16 @@ class VirtualMidiDeviceService : MidiDeviceService() {
 
     override fun onGetInputPortReceivers() = inputPortReceivers
 
-//    override fun onCreate() {
-//        super.onCreate()
-//    }
-
     override fun onDeviceStatusChanged(status: MidiDeviceStatus) {
         if (status.isInputPortOpen(0) && !receiverStarted) {
             receiverStarted = true
         } else if (!status.isInputPortOpen(0) && receiverStarted) {
             receiverStarted = false
         }
+    }
+
+    fun isInputPortOpen(): Boolean {
+        return receiverStarted
     }
 
     inner class BinderHelper : Binder() {

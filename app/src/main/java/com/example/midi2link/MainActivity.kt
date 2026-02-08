@@ -33,9 +33,6 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
-import kotlinx.coroutines.CoroutineDispatcher
-import org.koin.plugin.module.dsl.*
-import org.koin.dsl.module
 
 
 private fun manageForegroundService(context: Context, action: String) {
@@ -45,19 +42,6 @@ private fun manageForegroundService(context: Context, action: String) {
         startService(serviceIntent)
     }
 }
-
-//const val DEFAULT_DISPATCHER = "defaultDispatcher"
-//
-//val mainModule = module {
-//    single<CoroutineDispatcher>(named(DEFAULT_DISPATCHER)) {
-//        Dispatchers.Default
-//    }
-//    viewModel<MainViewModel>()
-//}
-
-
-
-
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -180,6 +164,8 @@ fun MainScreen(
 
     if (service != null) {
         Text(service!!.deviceInfo.toString())
+
+        Text("Receiver Started: ${service!!.isInputPortOpen()}")
 
     } else {
         Text("unable to bind")
