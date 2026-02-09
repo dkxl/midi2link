@@ -1,4 +1,4 @@
-package com.example.midi2link.ui.theme
+package com.dkxl.midi2link.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

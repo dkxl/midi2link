@@ -1,4 +1,4 @@
-package com.example.midi2link
+package com.dkxl.midi2link
 
 import android.Manifest
 import android.content.Context
@@ -27,7 +27,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LifecycleOwner
-import com.example.midi2link.ui.theme.Midi2LinkTheme
+import com.dkxl.midi2link.ui.theme.Midi2LinkTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState

@@ -1,4 +1,4 @@
-package com.example.midi2link.ui.theme
+package com.dkxl.midi2link.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

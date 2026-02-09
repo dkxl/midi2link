@@ -1,6 +1,5 @@
-package com.example.midi2link.ui.theme
+package com.dkxl.midi2link.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme

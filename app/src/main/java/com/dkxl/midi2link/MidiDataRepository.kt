@@ -1,4 +1,4 @@
-package com.example.midi2link
+package com.dkxl.midi2link
 
 import androidx.lifecycle.MutableLiveData
 
