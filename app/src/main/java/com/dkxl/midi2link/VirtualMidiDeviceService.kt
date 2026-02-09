@@ -4,6 +4,7 @@ import android.media.midi.MidiDeviceService
 import android.media.midi.MidiDeviceStatus
 import android.media.midi.MidiReceiver
 import com.mobileer.miditools.MidiFramer
+import java.io.IOException
 
 class VirtualMidiDeviceService : MidiDeviceService() {
     /*
@@ -14,8 +15,6 @@ class VirtualMidiDeviceService : MidiDeviceService() {
      *    - midiDataParser converts to String and sends to the MidiDataRepository
      *  UI elements can observe data changes in the DataRepository
      */
-
-
 
     private val midiReceiver: MidiReceiver = MyMidiReceiver()
     private val midiDataParser: MidiDataParser = MidiDataParser(MidiDataRepository.lastMessage)
@@ -30,8 +29,14 @@ class VirtualMidiDeviceService : MidiDeviceService() {
 
     inner class MyMidiReceiver : MidiReceiver() {
         override fun onSend(msg: ByteArray?, offset: Int, count: Int, timestamp: Long) {
-            // send raw data to be assembled into messages and added to the MidiDataRepository
-            midiFramer.send(msg, offset, count, timestamp)
+            // Use the timestamp when we received the message
+            val myTimestamp : Long = System.nanoTime()
+            try {
+                // send raw data to be assembled into messages and added to the MidiDataRepository
+                midiFramer.send(msg, offset, count, myTimestamp)
+            } catch (e: IOException) {
+                MidiDataRepository.lastMessage.postValue(e.toString())
+            }
         }
     }
 

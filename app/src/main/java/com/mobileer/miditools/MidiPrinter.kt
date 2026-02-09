@@ -96,22 +96,22 @@ object MidiPrinter {
     fun formatDeviceInfo(info: MidiDeviceInfo?): String {
         val sb = StringBuilder()
         if (info != null) {
-            val properties = info.getProperties()
+            val properties = info.properties
+
             for (key in properties.keySet()) {
-                val value = properties.get(key)
+                val value = properties.getString(key, "unknown")
                 sb.append(key).append(" = ").append(value).append('\n')
             }
             for (port in info.getPorts()) {
                 sb.append(
-                    if (port.getType() == MidiDeviceInfo.PortInfo.TYPE_INPUT)
+                    if (port.type == MidiDeviceInfo.PortInfo.TYPE_INPUT)
                         "input"
                     else
                         "output"
                 )
-                sb.append("[").append(port.getPortNumber()).append("] = \"").append(
-                    port.getName()
-                            + "\"\n"
-                )
+                sb.append("[")
+                    .append(port.portNumber).append("] = \"")
+                    .append(port.name + "\"\n")
             }
         }
         return sb.toString()

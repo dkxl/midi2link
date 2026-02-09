@@ -45,7 +45,7 @@ class MidiFramer(private val mReceiver: MidiReceiver) : MidiReceiver() {
         var offset = offset
         var sysExStartOffset = (if (mInSysEx) offset else -1)
 
-        for (i in 0..count) {
+        repeat (count) {
             val currentByte = data[offset]
             val currentInt = currentByte.toInt() and 0xFF
             if (currentInt >= 0x80) { // status byte?
@@ -104,7 +104,8 @@ class MidiFramer(private val mReceiver: MidiReceiver) : MidiReceiver() {
         // send any accumulatedSysEx data
         if (sysExStartOffset in 0..<offset) {
             mReceiver.send(
-                data, sysExStartOffset,
+                data,
+                 sysExStartOffset,
                 offset - sysExStartOffset, timestamp
             )
         }
