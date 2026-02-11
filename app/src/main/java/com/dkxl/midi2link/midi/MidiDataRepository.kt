@@ -7,9 +7,11 @@ object MidiDataRepository {
     val lastMessage = MutableLiveData<String>()   // last MIDI message received
     val inputPortOpen = MutableLiveData<Boolean>(false)  // MIDI input connected
 
-    val pieceTempo = MutableLiveData<Int>(0)  // tempo of the current piece of music
+    val songBpm = MutableLiveData<Int>(0)  // tempo of the current piece of music
 
-    val pieceStarted = MutableLiveData<Boolean>(false)
+    val bpmValid = MutableLiveData<Boolean>(false) // calculated BPM not yet stable
+
+    val songStarted = MutableLiveData<Boolean>(false)
 
     val linkOpen = MutableLiveData<Boolean>(false)  // Ableton Link open
 

@@ -12,13 +12,15 @@ class VirtualMidiDeviceService : MidiDeviceService() {
      *  Raw input comes to this service's midiReceiver
      *    - midiReceiver sends raw data to a MidiFramer
      *    - midiFramer assembled into complete messages and sends to a MidiDataParser
-     *    - midiDataParser converts to String and sends to the MidiDataRepository
+     *    - midiTempoParser extracts BPM and song state and sends to the MidiDataRepository
      *  UI elements can observe data changes in the DataRepository
      */
 
     private val midiReceiver: MidiReceiver = MyMidiReceiver()
-    private val midiDataParser: MidiDataParser = MidiDataParser(MidiDataRepository.lastMessage)
-    private val midiFramer: MidiFramer = MidiFramer(midiDataParser)
+
+    private val midiTempoParser: MidiTempoParser = MidiTempoParser(MidiDataRepository)
+
+    private val midiFramer: MidiFramer = MidiFramer(midiTempoParser)
     private val inputPortReceivers = arrayOf(midiReceiver)
 
     override fun onGetInputPortReceivers() = inputPortReceivers
