@@ -5,8 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import com.mobileer.miditools.MidiPrinter
 import java.util.Locale
 
-private const val NANOS_PER_MILLISECOND = 1000000L
-private const val NANOS_PER_SECOND = 1000L
 
 /*
  * A MidiReceiver that parses data into a string and posts to a LiveData instance
@@ -35,7 +33,7 @@ class MidiDataParser(private val liveData: MutableLiveData<String>) : MidiReceiv
                 // Mark timestamps that are out of order.
                 sb.append(if (timestamp < lastTimeStamp) "*" else " ")
                 lastTimeStamp = timestamp
-                sb.append(String.Companion.format(Locale.UK, "%10.3f (%2d): ", seconds, delayTimeMillis))
+                sb.append(String.format(Locale.UK, "%10.3f (%2d): ", seconds, delayTimeMillis))
             }
             sb.append(MidiPrinter.formatBytes(msg, offset, count))
             sb.append(": ")

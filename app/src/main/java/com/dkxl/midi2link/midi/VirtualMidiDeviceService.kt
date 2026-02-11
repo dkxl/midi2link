@@ -28,12 +28,12 @@ class VirtualMidiDeviceService : MidiDeviceService() {
     }
 
     inner class MyMidiReceiver : MidiReceiver() {
-        override fun onSend(msg: ByteArray?, offset: Int, count: Int, timestamp: Long) {
+        override fun onSend(data: ByteArray?, offset: Int, count: Int, timestamp: Long) {
             // Use the timestamp when we received the message
             val myTimestamp : Long = System.nanoTime()
             try {
                 // send raw data to be assembled into messages and added to the MidiDataRepository
-                midiFramer.send(msg, offset, count, myTimestamp)
+                midiFramer.send(data, offset, count, myTimestamp)
             } catch (e: IOException) {
                 MidiDataRepository.lastMessage.postValue(e.toString())
             }
