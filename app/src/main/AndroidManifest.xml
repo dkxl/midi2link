@@ -35,7 +35,7 @@
             android:foregroundServiceType="mediaPlayback">
         </service>
         <service
-            android:name=".VirtualMidiDeviceService"
+            android:name=".midi.VirtualMidiDeviceService"
             android:label="@string/midi_service_name"
             android:enabled="true"
             android:exported="true"
