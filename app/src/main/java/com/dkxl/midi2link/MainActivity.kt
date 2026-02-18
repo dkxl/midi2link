@@ -11,6 +11,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
@@ -19,8 +20,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -48,6 +51,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val lifecycleOwner = this
 
+        LinkWrapper.create()
+
         enableEdgeToEdge()
         setContent {
             Midi2LinkTheme {
@@ -63,6 +68,14 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    companion object {
+        init {
+            System.loadLibrary("midi2link")
+        }
+    }
+
+
 }
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -164,6 +177,7 @@ fun Midi2LinkControls(modifier: Modifier = Modifier) {
 @Composable
 fun MainScreen(lifecycleOwner: LifecycleOwner, modifier: Modifier = Modifier){
     // TODO: Move to a ViewModel
+    // TODO: use rememberSaveable
 
     var inputPortOpen: Boolean by remember { mutableStateOf(false) }
 
@@ -172,6 +186,9 @@ fun MainScreen(lifecycleOwner: LifecycleOwner, modifier: Modifier = Modifier){
     var bpmValid: Boolean by remember { mutableStateOf(false) }
 
     var songStarted: Boolean by remember { mutableStateOf(false) }
+
+    var tempo by remember { mutableDoubleStateOf(0.0)  }
+    var phase by remember { mutableDoubleStateOf(0.0)  }
 
 
     MidiDataRepository.inputPortOpen.observe(lifecycleOwner) { state ->
@@ -203,5 +220,67 @@ fun MainScreen(lifecycleOwner: LifecycleOwner, modifier: Modifier = Modifier){
     Text( "Song Started:", fontWeight = FontWeight.Bold)
     Text( if (songStarted) "Yes" else "No")
 
+    AbletonLinkScreen(
+        isRunning = songStarted,
+        curTempo = tempo,
+        curPhase = phase,
+        onTempoRefresh = { tempo = it },
+        onPhaseRefresh = { phase = it },
+        onRunStateChange = { songStarted = it },
+    )
+
+
+
+}
+
+@Composable
+private fun AbletonLinkScreen(
+    isRunning: Boolean,
+    curTempo: Double,
+    curPhase: Double,
+    onTempoRefresh: (Double) -> Unit,
+    onPhaseRefresh: (Double) -> Unit,
+    onRunStateChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+
+    ) {
+    Column (
+        modifier = modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(10.dp )
+    )
+    {
+
+        Button(
+            onClick= {
+                val tempo = LinkWrapper.getTempo()
+                onTempoRefresh(tempo) },
+        ) {
+            "Refresh Song Tempo"
+        }
+        Text("Current Tempo: $curTempo")
+
+        Button(
+            onClick= {
+                val phase = LinkWrapper.getPhase()
+                onPhaseRefresh(phase)
+            },
+        ) {
+            "Refresh Song Phase"
+        }
+        Text("Current Phase: $curPhase")
+
+
+        Button(
+            onClick = {
+                onRunStateChange(!isRunning)
+                LinkWrapper.setEnable()
+            },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text(if (isRunning) "Stop" else "Start")
+        }
+
+    }
 
 }
