@@ -5,7 +5,6 @@
 
 # Sets the minimum CMake version required for this project.
 cmake_minimum_required(VERSION 3.22.1)
-#cmake_minimum_required(VERSION 3.4.1)
 
 # Declares the project name. The project name can be accessed via ${ PROJECT_NAME},
 # Since this is the top level CMakeLists.txt, the project name is also accessible
@@ -46,7 +45,6 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
 target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
         ANDROID=1 LINK_PLATFORM_LINUX=1 PD=1 ABL_LINK_OFFSET_MS=23
 )
-
 
 # Specifies libraries CMake should link to your target library. You
 # can link libraries from various origins, such as libraries defined in this

@@ -23,7 +23,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -33,9 +32,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.dkxl.midi2link.midi.MidiDataRepository
 import com.dkxl.midi2link.ui.theme.Midi2LinkTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberPermissionState
-import com.google.accompanist.permissions.shouldShowRationale
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 
 
 private fun manageForegroundService(context: Context, action: String) {
@@ -91,24 +88,21 @@ fun Midi2LinkMain(
 
     ) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            val notificationPermissionState = rememberPermissionState(
-                Manifest.permission.POST_NOTIFICATIONS
+            val permissionsState = rememberMultiplePermissionsState(
+                listOf(
+                    Manifest.permission.POST_NOTIFICATIONS,
+                    Manifest.permission.INTERNET
+                )
             )
 
-            if (notificationPermissionState.status.isGranted) {
+            if (permissionsState.allPermissionsGranted) {
                 Midi2LinkControls(modifier)
                 MainScreen(lifecycleOwner, modifier)
             } else {
-                val textToShow = if (notificationPermissionState.status.shouldShowRationale) {
-                    "Notification permission is required so this app can continue to run in the background" +
-                            " Please grant the permission."
-                } else {
-                    "Notification permission is required so this app can continue to run in the background." +
-                            " Please grant the permission"
-                }
-                Text(textToShow)
-                Button(onClick = { notificationPermissionState.launchPermissionRequest() }) {
-                    Text("Request permission")
+                Text("Notification permission is required so this app can continue to run in the background")
+                Text("Internet permission is required so this app can communicate with Ableton Link devices")
+                Button(onClick = { permissionsState.launchMultiplePermissionRequest() }) {
+                    Text("Request permissions")
                 }
             }
         } else {
@@ -229,8 +223,6 @@ fun MainScreen(lifecycleOwner: LifecycleOwner, modifier: Modifier = Modifier){
         onRunStateChange = { songStarted = it },
     )
 
-
-
 }
 
 @Composable
@@ -274,7 +266,7 @@ private fun AbletonLinkScreen(
         Button(
             onClick = {
                 onRunStateChange(!isRunning)
-                LinkWrapper.setEnable()
+                LinkWrapper.setEnabled()
             },
             modifier = Modifier.fillMaxWidth(),
         ) {

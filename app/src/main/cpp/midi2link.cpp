@@ -31,11 +31,14 @@ Java_com_dkxl_midi2link_LinkWrapper_nativeGetPhase(JNIEnv *env, jobject thiz, jl
 }
 
 JNIEXPORT void JNICALL
-Java_com_dkxl_midi2link_LinkWrapper_nativeEnable(JNIEnv *env, jobject thiz, jlong managerHandle) {
+Java_com_dkxl_midi2link_LinkWrapper_nativeSetEnabled(JNIEnv *env, jobject thiz, jlong managerHandle,
+                                                     jboolean bEnable) {
     auto *manager = (LinkManager *) managerHandle;
     if (manager != nullptr) {
-        manager->enable();
+        manager->setEnabled(bEnable);
     }
 }
+
+
 
 } //extern

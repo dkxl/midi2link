@@ -1,7 +1,7 @@
 package com.dkxl.midi2link
 
 /**
- * Created by bloit on 05/04/2018.
+ * Created by jbloit on 05/04/2018.
  */
 
 object LinkWrapper {
@@ -28,9 +28,9 @@ object LinkWrapper {
         return 0.0
     }
 
-    fun setEnable() {
+    fun setEnabled(enabled: Boolean) {
         if (managerHandle != 0L) {
-            nativeEnable(managerHandle)
+            nativeSetEnabled(managerHandle, enabled)
         }
     }
 
@@ -39,5 +39,7 @@ object LinkWrapper {
     // LINK API
     external fun nativeGetTempo(handle: Long): Double
     external fun nativeGetPhase(handle: Long): Double
-    external fun nativeEnable(handle: Long)
+    external fun nativeSetEnabled(handle: Long, enabled: Boolean)
+
+
 }
