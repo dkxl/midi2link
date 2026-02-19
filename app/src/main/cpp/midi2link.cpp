@@ -2,7 +2,7 @@
 #include <string>
 #include <stdexcept>
 #include <iostream>
-#include "LinkManager.h"
+#include "AbletonLinkSession.h"
 
 extern "C" {
 
@@ -17,10 +17,10 @@ void throwJavaException(JNIEnv* env, const char* exceptionClassName, const char*
 
 
 JNIEXPORT jlong JNICALL
-Java_com_dkxl_midi2link_ableton_Link_createLinkManager(JNIEnv *env, jobject me) {
+Java_com_dkxl_midi2link_ableton_Link_createLinkSession(JNIEnv *env, jobject me) {
     try {
-        auto *manager = new(std::nothrow) LinkManager();
-        auto returnHandle = (jlong) manager;
+        auto *pLinkSession = new AbletonLinkSession();
+        auto returnHandle = (jlong) pLinkSession;
         return returnHandle;
     } catch (const std::exception &e) {
         // Catch standard C++ exceptions and translate to Java
@@ -35,68 +35,68 @@ Java_com_dkxl_midi2link_ableton_Link_createLinkManager(JNIEnv *env, jobject me) 
 
 JNIEXPORT jdouble JNICALL
 Java_com_dkxl_midi2link_ableton_Link_getTempo(JNIEnv *env, jobject me, jlong handle) {
-    auto *manager = (LinkManager *) handle;
-    if (manager == nullptr) {
+    auto *pLinkSession = (AbletonLinkSession *) handle;
+    if (pLinkSession == nullptr) {
         return -1;
     }
-    return manager->getTempo();
+    return pLinkSession->getTempo();
 }
 
 JNIEXPORT jdouble JNICALL
 Java_com_dkxl_midi2link_ableton_Link_getPhase(JNIEnv *env, jobject me, jlong handle) {
-    auto *manager = (LinkManager *) handle;
-    if (manager == nullptr) {
+    auto *pLinkSession = (AbletonLinkSession *) handle;
+    if (pLinkSession == nullptr) {
         return -1;
     }
-    return manager->getPhase();
+    return pLinkSession->getPhase();
 }
 
 JNIEXPORT void JNICALL
 Java_com_dkxl_midi2link_ableton_Link_setEnabled(JNIEnv *env, jobject me, jlong handle,
                                                 jboolean bEnable) {
-    auto *manager = (LinkManager *) handle;
-    if (manager != nullptr) {
-        manager->setEnabled(bEnable);
+    auto *pLinkSession = (AbletonLinkSession *) handle;
+    if (pLinkSession != nullptr) {
+        pLinkSession->setEnabled(bEnable);
     }
 }
 
 JNIEXPORT void JNICALL
 Java_com_dkxl_midi2link_ableton_Link_setTempo(JNIEnv *env, jobject me, jlong handle,
                                               jdouble bpm) {
-    auto *manager = (LinkManager *) handle;
-    if (manager != nullptr) {
-        manager->setTempo(bpm);
+    auto *pLinkSession = (AbletonLinkSession *) handle;
+    if (pLinkSession != nullptr) {
+        pLinkSession->setTempo(bpm);
     }
 }
 
 JNIEXPORT jboolean JNICALL
 Java_com_dkxl_midi2link_ableton_Link_isEnabled(JNIEnv *env, jobject me, jlong handle) {
-    auto *manager = (LinkManager *) handle;
-    return (manager != nullptr) && manager->isEnabled();
+    auto *pLinkSession = (AbletonLinkSession *) handle;
+    return (pLinkSession != nullptr) && pLinkSession->isEnabled();
 }
 
 JNIEXPORT void JNICALL
 Java_com_dkxl_midi2link_ableton_Link_setPlaying(JNIEnv *env, jobject me, jlong handle,
                                                 jboolean bPlay) {
-    auto *manager = (LinkManager *) handle;
-    if (manager != nullptr) {
-        manager->setPlaying(bPlay);
+    auto *pLinkSession = (AbletonLinkSession *) handle;
+    if (pLinkSession != nullptr) {
+        pLinkSession->setPlaying(bPlay);
     }
 }
 
 JNIEXPORT jboolean JNICALL
 Java_com_dkxl_midi2link_ableton_Link_isPlaying(JNIEnv *env, jobject me, jlong handle) {
-    auto *manager = (LinkManager *) handle;
-    return (manager != nullptr) && manager->isPlaying();
+    auto *pLinkSession = (AbletonLinkSession *) handle;
+    return (pLinkSession != nullptr) && pLinkSession->isPlaying();
 }
 
 JNIEXPORT jlong JNICALL
 Java_com_dkxl_midi2link_ableton_Link_numPeers(JNIEnv *env, jobject me, jlong handle) {
-    auto *manager = (LinkManager *) handle;
-    if (manager == nullptr) {
+    auto *pLinkSession = (AbletonLinkSession *) handle;
+    if (pLinkSession == nullptr) {
         return -1;
     }
-    return manager->numPeers();
+    return pLinkSession->numPeers();
 }
 
 } // extern

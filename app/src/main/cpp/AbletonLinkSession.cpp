@@ -2,19 +2,19 @@
 // Created by julien@macmini on 05/04/2018.
 //
 
-#include "LinkManager.h"
+#include "AbletonLinkSession.h"
 
 using Clock = ableton::link::platform::Clock;
 
-LinkManager::LinkManager(): link(120.){
+AbletonLinkSession::AbletonLinkSession(): link(120.){
     link.enable(true);
 }
 
-void LinkManager::setEnabled(bool bEnable) {
+void AbletonLinkSession::setEnabled(bool bEnable) {
     link.enable(bEnable);
 }
 
-double LinkManager::getTempo() {
+double AbletonLinkSession::getTempo() {
     if (link.isEnabled()) {
         auto state = link.captureAppSessionState();
         return state.tempo();
@@ -23,7 +23,7 @@ double LinkManager::getTempo() {
     }
 }
 
-double LinkManager::getPhase() {
+double AbletonLinkSession::getPhase() {
     if (link.isEnabled()) {
         const auto time = link.clock().micros();
         return link.captureAppSessionState().phaseAtTime(time, 4);
@@ -32,15 +32,15 @@ double LinkManager::getPhase() {
     }
 }
 
-std::size_t LinkManager::numPeers() {
+std::size_t AbletonLinkSession::numPeers() {
     return link.numPeers();
 }
 
-bool LinkManager::isEnabled() {
+bool AbletonLinkSession::isEnabled() {
     return link.isEnabled();
 }
 
-void LinkManager::setTempo(double bpm) {
+void AbletonLinkSession::setTempo(double bpm) {
     if (link.isEnabled()) {
         auto state = link.captureAppSessionState();
         const auto now = link.clock().micros();
@@ -49,11 +49,11 @@ void LinkManager::setTempo(double bpm) {
     }
 }
 
-bool LinkManager::isPlaying() {
+bool AbletonLinkSession::isPlaying() {
     return link.isEnabled() && link.captureAppSessionState().isPlaying();
 }
 
-void LinkManager::setPlaying(bool bPlay) {
+void AbletonLinkSession::setPlaying(bool bPlay) {
 
     //TODO: try/catch block
     if (link.isEnabled()) {

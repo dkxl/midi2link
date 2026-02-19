@@ -30,15 +30,15 @@ set (LINK_DIR /Users/davidh/Git/android/ableton-link-sdk)
 
 include(${LINK_DIR}/AbletonLinkConfig.cmake)
 
-include_directories(src/main/cpp/android-ifaddrs)
+#include_directories(src/main/cpp/android-ifaddrs)
 include_directories(${LINK_DIR}/include)
 include_directories(${LINK_DIR}/modules/asio-standalone/asio/include)
 
 add_library(${CMAKE_PROJECT_NAME} SHARED
         # List C/C++ source files with relative paths to this CMakeLists.txt.
         midi2link.cpp
-        LinkManager.cpp
-        android-ifaddrs/ifaddrs.cpp
+        AbletonLinkSession.cpp
+       # android-ifaddrs/ifaddrs.cpp  # TODO is this still needed?
 )
 
 # Environment vars to pass to Ableton Link cmake
@@ -50,7 +50,7 @@ target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
 # can link libraries from various origins, such as libraries defined in this
 # build script, prebuilt third-party libraries, or Android system libraries.
 target_link_libraries(${CMAKE_PROJECT_NAME}
-    # List libraries link to the target library
+    # List libraries to link to the target library
     android
     log
     Ableton::Link

@@ -9,7 +9,7 @@ object Link {
     // Creates a Link instance, unless we already have one
     fun create(): Boolean{
         if (handle == 0L) {
-            handle = createLinkManager()
+            handle = createLinkSession()
         }
         return handle != 0L
     }
@@ -68,7 +68,7 @@ object Link {
     }
 
 
-    private external fun createLinkManager(): Long
+    private external fun createLinkSession(): Long
     private external fun setEnabled(handle: Long, enable: Boolean)
     private external fun isEnabled(handle: Long) : Boolean
 
