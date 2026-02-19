@@ -29,6 +29,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LifecycleOwner
+import com.dkxl.midi2link.ableton.Link
 import com.dkxl.midi2link.midi.MidiDataRepository
 import com.dkxl.midi2link.ui.theme.Midi2LinkTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -48,7 +49,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val lifecycleOwner = this
 
-        LinkWrapper.create()
+        Link.create()
 
         enableEdgeToEdge()
         setContent {
@@ -245,7 +246,7 @@ private fun AbletonLinkScreen(
 
         Button(
             onClick= {
-                val tempo = LinkWrapper.getTempo()
+                val tempo = Link.getTempo()
                 onTempoRefresh(tempo) },
         ) {
             "Refresh Song Tempo"
@@ -254,7 +255,7 @@ private fun AbletonLinkScreen(
 
         Button(
             onClick= {
-                val phase = LinkWrapper.getPhase()
+                val phase = Link.getPhase()
                 onPhaseRefresh(phase)
             },
         ) {
@@ -266,7 +267,7 @@ private fun AbletonLinkScreen(
         Button(
             onClick = {
                 onRunStateChange(!isRunning)
-                LinkWrapper.setEnabled()
+                Link.setEnabled(true)
             },
             modifier = Modifier.fillMaxWidth(),
         ) {
