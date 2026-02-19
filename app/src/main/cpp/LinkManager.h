@@ -15,7 +15,7 @@ public:
     LinkManager();
 
     // Enable/disable a Link session
-    void setEnabled(bool bEnabled);
+    void setEnabled(bool bEnable);
 
     // Is Link currently enabled?
     bool isEnabled();
@@ -28,11 +28,12 @@ public:
     void setTempo(double bpm);
 
     // Get the current beat phase (e.g. 1st beat in the bar, 2nd beat, etc)
+    // TODO: why is this a double instead of an int?
     double getPhase();
 
     // Is the timeline playing
     bool isPlaying();
-    void setIsPlaying(bool bPlaying);
+    void setPlaying(bool bPlay);
 
 private:
     ableton::Link link;

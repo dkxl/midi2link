@@ -10,8 +10,8 @@ LinkManager::LinkManager(): link(120.){
     link.enable(true);
 }
 
-void LinkManager::setEnabled(bool bEnabled) {
-    link.enable(bEnabled);
+void LinkManager::setEnabled(bool bEnable) {
+    link.enable(bEnable);
 }
 
 double LinkManager::getTempo() {
@@ -19,7 +19,7 @@ double LinkManager::getTempo() {
         auto state = link.captureAppSessionState();
         return state.tempo();
     } else {
-        return -1;
+        return 0;
     }
 }
 
@@ -28,7 +28,7 @@ double LinkManager::getPhase() {
         const auto time = link.clock().micros();
         return link.captureAppSessionState().phaseAtTime(time, 4);
     } else {
-        return -1;
+        return 0;
     }
 }
 
@@ -53,13 +53,13 @@ bool LinkManager::isPlaying() {
     return link.isEnabled() && link.captureAppSessionState().isPlaying();
 }
 
-void LinkManager::setIsPlaying(bool bPlaying) {
+void LinkManager::setPlaying(bool bPlay) {
 
-    //TODO: safer to test that captureAppSessionState succeeded?
+    //TODO: try/catch block
     if (link.isEnabled()) {
         auto state = link.captureAppSessionState();
         const auto now = link.clock().micros();
-        state.setIsPlaying(bPlaying, now);
+        state.setIsPlaying(bPlay, now);
         link.commitAppSessionState(state);
     }
 
