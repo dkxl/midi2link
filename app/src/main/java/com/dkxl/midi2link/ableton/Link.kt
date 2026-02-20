@@ -2,14 +2,16 @@ package com.dkxl.midi2link.ableton
 
 object Link {
 
-    // TODO: should throw exceptions on errors? Or catch them here?
+    private const val DEFAULT_BPM = 120.0
+    private const val DEFAULT_ENABLE_STATE = true
+    private const val DEFAULT_BEATS_PER_BAR = 4.0
 
     private var handle: Long = 0L
 
     // Creates a Link instance, unless we already have one
-    fun create(): Boolean{
+    fun create(bpm: Double = DEFAULT_BPM, enable: Boolean = DEFAULT_ENABLE_STATE): Boolean {
         if (handle == 0L) {
-            handle = createLinkSession()
+            handle = createLinkSession(bpm, enable)
         }
         return handle != 0L
     }
@@ -52,9 +54,9 @@ object Link {
     }
 
     // Get the current beat phase (e.g. 1st beat in the bar, 2nd beat, etc)
-    fun getPhase(): Double {
+    fun getPhase(beatsPerBar: Double = DEFAULT_BEATS_PER_BAR): Double {
         if (handle != 0L) {
-            return getPhase(handle)
+            return getPhase(handle, beatsPerBar)
         }
         return 0.0
     }
@@ -68,7 +70,7 @@ object Link {
     }
 
 
-    private external fun createLinkSession(): Long
+    private external fun createLinkSession(bpm: Double, enable: Boolean): Long
     private external fun setEnabled(handle: Long, enable: Boolean)
     private external fun isEnabled(handle: Long) : Boolean
 
@@ -78,7 +80,7 @@ object Link {
     private external fun setPlaying(handle: Long, play: Boolean)
     private external fun isPlaying(handle: Long) : Boolean
 
-    private external fun getPhase(handle: Long): Double
+    private external fun getPhase(handle: Long, quantum: Double): Double
 
     private external fun numPeers(handle: Long): Long
 

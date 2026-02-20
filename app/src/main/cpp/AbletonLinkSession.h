@@ -6,10 +6,10 @@
 class AbletonLinkSession {
 
 public:
-    // Creates a new Link instance
-    AbletonLinkSession();
+    // Create a new Link instance
+    explicit AbletonLinkSession(double bpm, bool bEnable);
 
-    // Enable/disable the session
+    // Enable/disable the Link communication session
     void setEnabled(bool bEnable);
     bool isEnabled();
 
@@ -25,8 +25,7 @@ public:
     void setPlaying(bool bPlay);
 
     // Get the current beat phase (e.g. 1st beat in the bar, 2nd beat, etc)
-    // TODO: why is this a double instead of an int?
-    double getPhase();
+    double getPhase(double quantum);
 
 private:
     ableton::Link link;

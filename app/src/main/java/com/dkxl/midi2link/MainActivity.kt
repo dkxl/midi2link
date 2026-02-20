@@ -49,7 +49,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val lifecycleOwner = this
 
-        Link.create()
+        Link.create(120.0)
 
         enableEdgeToEdge()
         setContent {
@@ -155,17 +155,19 @@ fun Midi2LinkControls(modifier: Modifier = Modifier) {
 
     // TODO remember state of the service, and show/hide buttons accordingly.
 
+    Text( "MIDI Input", fontWeight = FontWeight.Bold)
+
     Button(onClick = {
         val action = ForegroundService.Action.START.toString()
         manageForegroundService(context, action)
     }) {
-        Text(text = "Start Service")
+        Text(text = "Start MIDI Service")
     }
     Button(onClick = {
         val action = ForegroundService.Action.STOP.toString()
         manageForegroundService(context, action)
     }) {
-        Text(text = "Stop Service")
+        Text(text = "Stop MIDI Service")
     }
 }
 
@@ -203,17 +205,13 @@ fun MainScreen(lifecycleOwner: LifecycleOwner, modifier: Modifier = Modifier){
     }
 
     // TODO: is there a jetpack object to display boolean states
-    Text( "Input Port Connected:", fontWeight = FontWeight.Bold)
-    Text( if (inputPortOpen) "Yes" else "No")
+    Text( "Input Port Connected: " + if (inputPortOpen) "Yes" else "No")
 
-    Text("Beats Per Minute:", fontWeight = FontWeight.Bold)
-    Text(songBpm.toString())
+    Text("Beats Per Minute: $songBpm")
 
-    Text( "BPM Valid:", fontWeight = FontWeight.Bold)
-    Text( if (bpmValid) "Yes" else "No")
+    Text( "BPM Valid: " + if (bpmValid) "Yes" else "No")
 
-    Text( "Song Started:", fontWeight = FontWeight.Bold)
-    Text( if (songStarted) "Yes" else "No")
+    Text( "Song Started: " + if (songStarted) "Yes" else "No")
 
     AbletonLinkScreen(
         isRunning = songStarted,
@@ -243,13 +241,14 @@ private fun AbletonLinkScreen(
         verticalArrangement = Arrangement.spacedBy(10.dp )
     )
     {
+        Text("Ableton Link", fontWeight = FontWeight.Bold)
 
         Button(
             onClick= {
                 val tempo = Link.getTempo()
-                onTempoRefresh(tempo) },
+                onTempoRefresh(tempo) }
         ) {
-            "Refresh Song Tempo"
+            Text("Refresh Song Tempo")
         }
         Text("Current Tempo: $curTempo")
 
@@ -257,9 +256,9 @@ private fun AbletonLinkScreen(
             onClick= {
                 val phase = Link.getPhase()
                 onPhaseRefresh(phase)
-            },
+            }
         ) {
-            "Refresh Song Phase"
+            Text("Refresh Song Phase")
         }
         Text("Current Phase: $curPhase")
 
@@ -268,10 +267,9 @@ private fun AbletonLinkScreen(
             onClick = {
                 onRunStateChange(!isRunning)
                 Link.setEnabled(true)
-            },
-            modifier = Modifier.fillMaxWidth(),
+            }
         ) {
-            Text(if (isRunning) "Stop" else "Start")
+            Text(if (isRunning) "Stop Link" else "Start Link")
         }
 
     }
