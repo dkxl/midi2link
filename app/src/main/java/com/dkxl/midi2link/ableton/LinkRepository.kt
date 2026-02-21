@@ -1,14 +1,8 @@
-package com.dkxl.midi2link.midi
+package com.dkxl.midi2link.ableton
 
 import androidx.lifecycle.MutableLiveData
 
-object MidiDataRepository {
-    val lastMidiMessageReceived = MutableLiveData<String>()   // last MIDI message received
-    val midiInputIsConnected = MutableLiveData<Boolean>(false)  // MIDI input connected
-    val midiBpm = MutableLiveData<Int>(0)  // tempo received from MIDI
-    val midiBpmIsValid = MutableLiveData<Boolean>(false) // calculated BPM not yet stable
-    val midiIsPlaying = MutableLiveData<Boolean>(false)  // track is playing
-
+object LinkRepository {
 
     val linkIsOpen = MutableLiveData<Boolean>(false)  // Ableton Link open
     val linkBpm = MutableLiveData<Int>(0)    // tempo received from Link peers
@@ -16,5 +10,4 @@ object MidiDataRepository {
     val linkBeatInBar = MutableLiveData<Int>(0) // current beat in this bar
     val linkIsPlaying = MutableLiveData<Boolean>(false) // track is playing
     val linkNumPeers = MutableLiveData<Int>(0) // number of Link peers
-
 }

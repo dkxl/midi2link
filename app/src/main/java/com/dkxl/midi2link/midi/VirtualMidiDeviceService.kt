@@ -18,7 +18,7 @@ class VirtualMidiDeviceService : MidiDeviceService() {
 
     private val midiReceiver: MidiReceiver = MyMidiReceiver()
 
-    private val midiTempoParser: MidiTempoParser = MidiTempoParser(MidiDataRepository)
+    private val midiTempoParser: MidiTempoParser = MidiTempoParser(MidiRepository)
 
     private val midiFramer: MidiFramer = MidiFramer(midiTempoParser)
     private val inputPortReceivers = arrayOf(midiReceiver)
@@ -26,7 +26,7 @@ class VirtualMidiDeviceService : MidiDeviceService() {
     override fun onGetInputPortReceivers() = inputPortReceivers
 
     override fun onDeviceStatusChanged(status: MidiDeviceStatus) {
-        MidiDataRepository.midiInputIsConnected.postValue(status.isInputPortOpen(0))
+        MidiRepository.midiInputIsConnected.postValue(status.isInputPortOpen(0))
     }
 
     inner class MyMidiReceiver : MidiReceiver() {
@@ -37,7 +37,7 @@ class VirtualMidiDeviceService : MidiDeviceService() {
                 // send raw data to be assembled into messages and added to the MidiDataRepository
                 midiFramer.send(data, offset, count, myTimestamp)
             } catch (e: IOException) {
-                MidiDataRepository.lastMidiMessageReceived.postValue(e.toString())
+                MidiRepository.lastMidiMessageReceived.postValue(e.toString())
             }
         }
     }

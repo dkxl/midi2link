@@ -19,7 +19,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
@@ -29,8 +28,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LifecycleOwner
-import com.dkxl.midi2link.ableton.Link
-import com.dkxl.midi2link.midi.MidiDataRepository
+import com.dkxl.midi2link.midi.MidiRepository
 import com.dkxl.midi2link.ui.theme.Midi2LinkTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
@@ -178,13 +176,13 @@ fun MainScreen(lifecycleOwner: LifecycleOwner, modifier: Modifier = Modifier){
     var phase: Int by remember { mutableIntStateOf(0)  }
 
 
-    MidiDataRepository.midiInputIsConnected.observe(lifecycleOwner) { inputPortOpen = it }
+    MidiRepository.midiInputIsConnected.observe(lifecycleOwner) { inputPortOpen = it }
 
-    MidiDataRepository.midiBpm.observe(lifecycleOwner) { songBpm = it }
+    MidiRepository.midiBpm.observe(lifecycleOwner) { songBpm = it }
 
-    MidiDataRepository.midiBpmIsValid.observe(lifecycleOwner) { bpmValid = it }
+    MidiRepository.midiBpmIsValid.observe(lifecycleOwner) { bpmValid = it }
 
-    MidiDataRepository.midiIsPlaying.observe(lifecycleOwner) { songStarted = it }
+    MidiRepository.midiIsPlaying.observe(lifecycleOwner) { songStarted = it }
 
     // TODO: is there a jetpack object to display boolean states
     Text( "Input Port Connected: " + if (inputPortOpen) "Yes" else "No")
@@ -225,34 +223,34 @@ private fun AbletonLinkScreen(
     {
         Text("Ableton Link", fontWeight = FontWeight.Bold)
 
-        Button(
-            onClick= {
-                val tempo = Link.getTempo()
-                onTempoRefresh(tempo) }
-        ) {
-            Text("Refresh Song Tempo")
-        }
-        Text("Current Tempo: $curTempo")
-
-        Button(
-            onClick= {
-                val phase = Link.getPhase()
-                onPhaseRefresh(phase)
-            }
-        ) {
-            Text("Refresh Song Phase")
-        }
-        Text("Current Phase: $curPhase")
-
-
-        Button(
-            onClick = {
-                onRunStateChange(!isRunning)
-                Link.setEnabled(true)
-            }
-        ) {
-            Text(if (isRunning) "Stop Link" else "Start Link")
-        }
+//        Button(
+//            onClick= {
+//                val tempo = AbletonLinkWrapper.getTempo()
+//                onTempoRefresh(tempo) }
+//        ) {
+//            Text("Refresh Song Tempo")
+//        }
+//        Text("Current Tempo: $curTempo")
+//
+//        Button(
+//            onClick= {
+//                val phase = AbletonLinkWrapper.getPhase()
+//                onPhaseRefresh(phase)
+//            }
+//        ) {
+//            Text("Refresh Song Phase")
+//        }
+//        Text("Current Phase: $curPhase")
+//
+//
+//        Button(
+//            onClick = {
+//                onRunStateChange(!isRunning)
+//                AbletonLinkWrapper.setEnabled(true)
+//            }
+//        ) {
+//            Text(if (isRunning) "Stop Link" else "Start Link")
+//        }
 
     }
 

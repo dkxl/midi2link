@@ -1,13 +1,27 @@
 package com.dkxl.midi2link.ableton
 
-object Link {
+import android.util.Log
 
-    init {
-        System.loadLibrary("midi2link")
+const val DEFAULT_BPM: Int = 120  // beats per minute
+const val DEFAULT_ENABLE_STATE: Boolean = true
+const val DEFAULT_QUANTUM: Int = 4  // beats per bar
+
+/*
+ * Wrapper for accessing the native Ableton Link SDK
+ */
+class LinkWrapper {
+
+    companion object {
+        init {
+            try {
+                System.loadLibrary("midi2link")
+            } catch (e: UnsatisfiedLinkError) {
+                // Log the error or handle it gracefully
+                Log.e("LinkWrapper", "Could not load native library", e)
+            }
+        }
     }
-    private const val DEFAULT_BPM = 120
-    private const val DEFAULT_ENABLE_STATE = true
-    private const val DEFAULT_BEATS_PER_BAR = 4
+
     private var handle: Long = 0L
 
     // TODO: allow UI to register callbacks for tempo change, playing state change, and metronome beat
@@ -59,7 +73,7 @@ object Link {
     }
 
     // Get the current beat phase (e.g. 1st beat in the bar, 2nd beat, etc)
-    fun getPhase(beatsPerBar: Int = DEFAULT_BEATS_PER_BAR): Int {
+    fun getPhase(beatsPerBar: Int = DEFAULT_QUANTUM): Int {
         if (handle != 0L) {
             return getPhase(handle, beatsPerBar.toDouble()).toInt()
         }
@@ -74,7 +88,8 @@ object Link {
         return 0L
     }
 
-
+    // External JNI function signatures to access the Ableton Link SDK
+    // See cpp/midi2link.cpp for details
     private external fun createLinkSession(bpm: Double, enable: Boolean): Long
     private external fun setEnabled(handle: Long, enable: Boolean)
     private external fun isEnabled(handle: Long) : Boolean

@@ -10,7 +10,7 @@ import com.mobileer.miditools.MidiConstants
  * and posts any changes to the Data Repo
  * Assumes the MIDI data has been assembled into complete messages by a MidiFramer
  */
-class MidiTempoParser(private val dataRepo: MidiDataRepository ) : MidiReceiver() {
+class MidiTempoParser(private val dataRepo: MidiRepository ) : MidiReceiver() {
 
     private var lastBeatTimestamp: Long = 0L
     private var midiClockCount: Int = 0

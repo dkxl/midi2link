@@ -6,14 +6,16 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
-import com.dkxl.midi2link.ableton.Link
-import com.dkxl.midi2link.midi.MidiDataRepository
+import com.dkxl.midi2link.ableton.LinkWrapper
+import com.dkxl.midi2link.midi.MidiRepository
 import kotlin.jvm.java
 
-class ForegroundService() : Service() {
+class ForegroundService(
+    private val abletonLink: LinkWrapper = LinkWrapper(),
+    private val data: MidiRepository = MidiRepository
+) : Service() {
 
     private val channelId = "Midi2LinkServiceChannel"
-    private val data = MidiDataRepository
 
     override fun onBind(intent: Intent): IBinder? {
         return null
@@ -33,14 +35,13 @@ class ForegroundService() : Service() {
     }
 
     override fun onDestroy() {
-        Link.setEnabled(false)
+        abletonLink.setEnabled(false)
         unsubscribeFromLiveData()
         super.onDestroy()
     }
 
     private fun start() {
-        val notification = NotificationCompat.Builder(this,
-            channelId
+        val notification = NotificationCompat.Builder(this, channelId
         )
             .setSmallIcon(R.mipmap.ic_launcher_round)
             .setContentTitle("MIDI 2 Link")
@@ -49,7 +50,7 @@ class ForegroundService() : Service() {
         startForeground(1, notification)
         // how to handle failures?
         subscribeToLiveData()
-        Link.create()
+        abletonLink.create()
     }
 
     enum class Action {
@@ -67,11 +68,12 @@ class ForegroundService() : Service() {
 
     private fun subscribeToLiveData() {
         data.midiBpm.observeForever {
-            // tell Live Data peers the new BPM
-            Link.setTempo(it)
+            // tell Link peers the new BPM when MIDI clock's bpm changes
+            abletonLink.setTempo(it)
         }
         data.midiIsPlaying.observeForever {
-            Link.setPlaying(it)
+            // tell Link peers to start/stop when MIDI says start/stop
+            abletonLink.setPlaying(it)
         }
     }
 
