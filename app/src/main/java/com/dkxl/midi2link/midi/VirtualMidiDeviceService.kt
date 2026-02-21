@@ -26,7 +26,7 @@ class VirtualMidiDeviceService : MidiDeviceService() {
     override fun onGetInputPortReceivers() = inputPortReceivers
 
     override fun onDeviceStatusChanged(status: MidiDeviceStatus) {
-        MidiDataRepository.inputPortOpen.postValue(status.isInputPortOpen(0))
+        MidiDataRepository.midiInputIsConnected.postValue(status.isInputPortOpen(0))
     }
 
     inner class MyMidiReceiver : MidiReceiver() {
@@ -37,7 +37,7 @@ class VirtualMidiDeviceService : MidiDeviceService() {
                 // send raw data to be assembled into messages and added to the MidiDataRepository
                 midiFramer.send(data, offset, count, myTimestamp)
             } catch (e: IOException) {
-                MidiDataRepository.lastMessage.postValue(e.toString())
+                MidiDataRepository.lastMidiMessageReceived.postValue(e.toString())
             }
         }
     }

@@ -6,11 +6,14 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
+import com.dkxl.midi2link.ableton.Link
+import com.dkxl.midi2link.midi.MidiDataRepository
 import kotlin.jvm.java
 
-class ForegroundService : Service() {
+class ForegroundService() : Service() {
 
     private val channelId = "Midi2LinkServiceChannel"
+    private val data = MidiDataRepository
 
     override fun onBind(intent: Intent): IBinder? {
         return null
@@ -29,6 +32,12 @@ class ForegroundService : Service() {
         return super.onStartCommand(intent, flags, startId)
     }
 
+    override fun onDestroy() {
+        Link.setEnabled(false)
+        unsubscribeFromLiveData()
+        super.onDestroy()
+    }
+
     private fun start() {
         val notification = NotificationCompat.Builder(this,
             channelId
@@ -38,6 +47,9 @@ class ForegroundService : Service() {
             .setContentText("Running")
             .build()
         startForeground(1, notification)
+        // how to handle failures?
+        subscribeToLiveData()
+        Link.create()
     }
 
     enum class Action {
@@ -52,5 +64,21 @@ class ForegroundService : Service() {
         val manager = getSystemService(NotificationManager::class.java)
         manager.createNotificationChannel(serviceChannel)
     }
+
+    private fun subscribeToLiveData() {
+        data.midiBpm.observeForever {
+            // tell Live Data peers the new BPM
+            Link.setTempo(it)
+        }
+        data.midiIsPlaying.observeForever {
+            Link.setPlaying(it)
+        }
+    }
+
+    private fun unsubscribeFromLiveData() {
+        data.midiBpm.removeObserver {  }
+        data.midiIsPlaying.removeObserver {  }
+    }
+
 
 }

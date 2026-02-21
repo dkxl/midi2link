@@ -14,7 +14,7 @@ class MidiTempoParser(private val dataRepo: MidiDataRepository ) : MidiReceiver(
 
     private var lastBeatTimestamp: Long = 0L
     private var midiClockCount: Int = 0
-    private var songStarted: Boolean = false
+    private var midiIsPlaying: Boolean = false
 
     override fun onSend(
         data: ByteArray?,
@@ -54,13 +54,13 @@ class MidiTempoParser(private val dataRepo: MidiDataRepository ) : MidiReceiver(
     }
 
     private fun startSong() {
-        songStarted = true
-        dataRepo.songStarted.postValue(true)
+        midiIsPlaying = true
+        dataRepo.midiIsPlaying.postValue(true)
     }
 
     private fun stopSong() {
-        songStarted = false
-        dataRepo.songStarted.postValue(false)
+        midiIsPlaying = false
+        dataRepo.midiIsPlaying.postValue(false)
     }
 
 
@@ -78,13 +78,13 @@ class MidiTempoParser(private val dataRepo: MidiDataRepository ) : MidiReceiver(
         lastBeatTimestamp = midiClockTimestamp
 
         if (beatIntervalNanoSeconds >= MAX_BEAT_INTERVAL) {
-            dataRepo.bpmValid.postValue(false)
-            dataRepo.songBpm.postValue(0)
+            dataRepo.midiBpmIsValid.postValue(false)
+            dataRepo.midiBpm.postValue(0)
             return
         }
 
         val beatsPerMinute = (NANOS_PER_MINUTE/beatIntervalNanoSeconds).toInt()
-        dataRepo.songBpm.postValue(beatsPerMinute)
+        dataRepo.midiBpm.postValue(beatsPerMinute)
     }
 
 }

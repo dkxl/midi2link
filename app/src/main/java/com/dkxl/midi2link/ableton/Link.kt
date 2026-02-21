@@ -2,16 +2,21 @@ package com.dkxl.midi2link.ableton
 
 object Link {
 
-    private const val DEFAULT_BPM = 120.0
+    init {
+        System.loadLibrary("midi2link")
+    }
+    private const val DEFAULT_BPM = 120
     private const val DEFAULT_ENABLE_STATE = true
-    private const val DEFAULT_BEATS_PER_BAR = 4.0
-
+    private const val DEFAULT_BEATS_PER_BAR = 4
     private var handle: Long = 0L
 
+    // TODO: allow UI to register callbacks for tempo change, playing state change, and metronome beat
+    // TODO: (within c code) convert phase to beats (1st beat, 2nd beat, etc) as per Linkhut
+
     // Creates a Link instance, unless we already have one
-    fun create(bpm: Double = DEFAULT_BPM, enable: Boolean = DEFAULT_ENABLE_STATE): Boolean {
+    fun create(bpm: Int = DEFAULT_BPM, enable: Boolean = DEFAULT_ENABLE_STATE): Boolean {
         if (handle == 0L) {
-            handle = createLinkSession(bpm, enable)
+            handle = createLinkSession(bpm.toDouble(), enable)
         }
         return handle != 0L
     }
@@ -29,17 +34,17 @@ object Link {
     }
 
     // Tempo of the timeline, in Beats Per Minute
-    fun setTempo(bpm: Double) {
+    fun setTempo(bpm: Int) {
         if (handle != 0L) {
-            setTempo(handle, bpm)
+            setTempo(handle, bpm.toDouble())
         }
     }
 
-    fun getTempo(): Double {
+    fun getTempo(): Int {
         if (handle != 0L) {
-            return getTempo(handle)
+            return getTempo(handle).toInt()
         }
-        return 0.0
+        return 0
     }
 
     // Is the timeline playing
@@ -54,11 +59,11 @@ object Link {
     }
 
     // Get the current beat phase (e.g. 1st beat in the bar, 2nd beat, etc)
-    fun getPhase(beatsPerBar: Double = DEFAULT_BEATS_PER_BAR): Double {
+    fun getPhase(beatsPerBar: Int = DEFAULT_BEATS_PER_BAR): Int {
         if (handle != 0L) {
-            return getPhase(handle, beatsPerBar)
+            return getPhase(handle, beatsPerBar.toDouble()).toInt()
         }
-        return 0.0
+        return 0
     }
 
     // Number of Link peers in the session

@@ -11,7 +11,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
@@ -21,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -49,8 +49,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val lifecycleOwner = this
 
-        Link.create(120.0)
-
         enableEdgeToEdge()
         setContent {
             Midi2LinkTheme {
@@ -66,14 +64,6 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
-    companion object {
-        init {
-            System.loadLibrary("midi2link")
-        }
-    }
-
-
 }
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -178,31 +168,23 @@ fun MainScreen(lifecycleOwner: LifecycleOwner, modifier: Modifier = Modifier){
 
     var inputPortOpen: Boolean by remember { mutableStateOf(false) }
 
-    var songBpm: Int by remember { mutableStateOf(0) }
+    var songBpm: Int by remember { mutableIntStateOf(0) }
 
     var bpmValid: Boolean by remember { mutableStateOf(false) }
 
     var songStarted: Boolean by remember { mutableStateOf(false) }
 
-    var tempo by remember { mutableDoubleStateOf(0.0)  }
-    var phase by remember { mutableDoubleStateOf(0.0)  }
+    var tempo: Int by remember { mutableIntStateOf(0)  }
+    var phase: Int by remember { mutableIntStateOf(0)  }
 
 
-    MidiDataRepository.inputPortOpen.observe(lifecycleOwner) { state ->
-        inputPortOpen = state
-    }
+    MidiDataRepository.midiInputIsConnected.observe(lifecycleOwner) { inputPortOpen = it }
 
-    MidiDataRepository.songBpm.observe(lifecycleOwner) { msg ->
-        songBpm = msg
-    }
+    MidiDataRepository.midiBpm.observe(lifecycleOwner) { songBpm = it }
 
-    MidiDataRepository.bpmValid.observe(lifecycleOwner) {state ->
-        bpmValid = state
-    }
+    MidiDataRepository.midiBpmIsValid.observe(lifecycleOwner) { bpmValid = it }
 
-    MidiDataRepository.songStarted.observe(lifecycleOwner) {state ->
-        songStarted = state
-    }
+    MidiDataRepository.midiIsPlaying.observe(lifecycleOwner) { songStarted = it }
 
     // TODO: is there a jetpack object to display boolean states
     Text( "Input Port Connected: " + if (inputPortOpen) "Yes" else "No")
@@ -227,10 +209,10 @@ fun MainScreen(lifecycleOwner: LifecycleOwner, modifier: Modifier = Modifier){
 @Composable
 private fun AbletonLinkScreen(
     isRunning: Boolean,
-    curTempo: Double,
-    curPhase: Double,
-    onTempoRefresh: (Double) -> Unit,
-    onPhaseRefresh: (Double) -> Unit,
+    curTempo: Int,
+    curPhase: Int,
+    onTempoRefresh: (Int) -> Unit,
+    onPhaseRefresh: (Int) -> Unit,
     onRunStateChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 
