@@ -17,7 +17,7 @@ void throwJavaException(JNIEnv* env, const char* exceptionClassName, const char*
 
 // jobject is a reference to the calling Java object
 JNIEXPORT jlong JNICALL
-Java_com_dkxl_midi2link_ableton_LinkWrapper_createLinkSession(JNIEnv *env, jobject me, jdouble bpm, jboolean bEnable) {
+Java_com_dkxl_midi2link_link_LinkWrapper_createLinkSession(JNIEnv *env, jobject me, jdouble bpm, jboolean bEnable) {
     try {
         auto *pLinkSession = new AbletonLinkSession(bpm, bEnable);
         auto returnHandle = (jlong) pLinkSession;
@@ -34,7 +34,7 @@ Java_com_dkxl_midi2link_ableton_LinkWrapper_createLinkSession(JNIEnv *env, jobje
 }
 
 JNIEXPORT jdouble JNICALL
-Java_com_dkxl_midi2link_ableton_LinkWrapper_getTempo(JNIEnv *env, jobject me, jlong handle) {
+Java_com_dkxl_midi2link_link_LinkWrapper_getTempo(JNIEnv *env, jobject me, jlong handle) {
     try {
         auto *pLinkSession = (AbletonLinkSession *) handle;
         return pLinkSession->getTempo();
@@ -48,7 +48,7 @@ Java_com_dkxl_midi2link_ableton_LinkWrapper_getTempo(JNIEnv *env, jobject me, jl
 }
 
 JNIEXPORT jdouble JNICALL
-Java_com_dkxl_midi2link_ableton_LinkWrapper_getPhase(JNIEnv *env, jobject me, jlong handle, jdouble quantum) {
+Java_com_dkxl_midi2link_link_LinkWrapper_getPhase(JNIEnv *env, jobject me, jlong handle, jdouble quantum) {
 try {
     auto *pLinkSession = (AbletonLinkSession *) handle;
     return pLinkSession->getPhase(quantum);
@@ -62,7 +62,7 @@ try {
 }
 
 JNIEXPORT void JNICALL
-Java_com_dkxl_midi2link_ableton_LinkWrapper_setEnabled(JNIEnv *env, jobject me, jlong handle, jboolean bEnable) {
+Java_com_dkxl_midi2link_link_LinkWrapper_setEnabled(JNIEnv *env, jobject me, jlong handle, jboolean bEnable) {
 try {
     auto *pLinkSession = (AbletonLinkSession *) handle;
     pLinkSession->setEnabled(bEnable);
@@ -74,7 +74,7 @@ try {
 }
 
 JNIEXPORT void JNICALL
-Java_com_dkxl_midi2link_ableton_LinkWrapper_setTempo(JNIEnv *env, jobject me, jlong handle, jdouble bpm) {
+Java_com_dkxl_midi2link_link_LinkWrapper_setTempo(JNIEnv *env, jobject me, jlong handle, jdouble bpm) {
     try {
         auto *pLinkSession = (AbletonLinkSession *) handle;
         pLinkSession->setTempo(bpm);
@@ -86,7 +86,7 @@ Java_com_dkxl_midi2link_ableton_LinkWrapper_setTempo(JNIEnv *env, jobject me, jl
 }
 
 JNIEXPORT jboolean JNICALL
-Java_com_dkxl_midi2link_ableton_LinkWrapper_isEnabled(JNIEnv *env, jobject me, jlong handle) {
+Java_com_dkxl_midi2link_link_LinkWrapper_isEnabled(JNIEnv *env, jobject me, jlong handle) {
     try {
     auto *pLinkSession = (AbletonLinkSession *) handle;
     return (pLinkSession != nullptr) && pLinkSession->isEnabled();
@@ -100,7 +100,7 @@ Java_com_dkxl_midi2link_ableton_LinkWrapper_isEnabled(JNIEnv *env, jobject me, j
 }
 
 JNIEXPORT void JNICALL
-Java_com_dkxl_midi2link_ableton_LinkWrapper_setPlaying(JNIEnv *env, jobject me, jlong handle, jboolean bPlay) {
+Java_com_dkxl_midi2link_link_LinkWrapper_setPlaying(JNIEnv *env, jobject me, jlong handle, jboolean bPlay) {
     try {
     auto *pLinkSession = (AbletonLinkSession *) handle;
     pLinkSession->setPlaying(bPlay);
@@ -112,7 +112,7 @@ Java_com_dkxl_midi2link_ableton_LinkWrapper_setPlaying(JNIEnv *env, jobject me, 
 }
 
 JNIEXPORT jboolean JNICALL
-Java_com_dkxl_midi2link_ableton_LinkWrapper_isPlaying(JNIEnv *env, jobject me, jlong handle) {
+Java_com_dkxl_midi2link_link_LinkWrapper_isPlaying(JNIEnv *env, jobject me, jlong handle) {
     try {
     auto *pLinkSession = (AbletonLinkSession *) handle;
     return (pLinkSession != nullptr) && pLinkSession->isPlaying();
@@ -126,7 +126,7 @@ Java_com_dkxl_midi2link_ableton_LinkWrapper_isPlaying(JNIEnv *env, jobject me, j
 }
 
 JNIEXPORT jlong JNICALL
-Java_com_dkxl_midi2link_ableton_LinkWrapper_numPeers(JNIEnv *env, jobject me, jlong handle) {
+Java_com_dkxl_midi2link_link_LinkWrapper_numPeers(JNIEnv *env, jobject me, jlong handle) {
     try {
     auto *pLinkSession = (AbletonLinkSession *) handle;
     return pLinkSession->numPeers();

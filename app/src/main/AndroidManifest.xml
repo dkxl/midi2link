@@ -29,14 +29,14 @@
             </intent-filter>
         </activity>
         <service
-            android:name=".ForegroundService"
+            android:name=".services.ForegroundService"
             android:enabled="true"
             android:exported="false"
             android:label="@string/foreground_service_name"
             android:foregroundServiceType="mediaPlayback">
         </service>
         <service
-            android:name=".midi.VirtualMidiDeviceService"
+            android:name=".services.VirtualMidiDeviceService"
             android:label="@string/midi_service_name"
             android:enabled="true"
             android:exported="true"

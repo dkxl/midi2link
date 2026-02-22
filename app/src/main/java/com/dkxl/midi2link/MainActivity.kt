@@ -1,46 +1,20 @@
 package com.dkxl.midi2link
 
-import android.Manifest
 import android.content.Context
-import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.lifecycle.LifecycleOwner
-import com.dkxl.midi2link.midi.MidiRepository
+import com.dkxl.midi2link.ui.screens.Midi2LinkMain
 import com.dkxl.midi2link.ui.theme.Midi2LinkTheme
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.rememberMultiplePermissionsState
 
 
-private fun manageForegroundService(context: Context, action: String) {
-    with(context) {
-        val serviceIntent = Intent(this, ForegroundService::class.java)
-        serviceIntent.action = action
-        startService(serviceIntent)
-    }
-}
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,194 +38,3 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalPermissionsApi::class)
-@Composable
-fun Midi2LinkMain(
-    lifecycleOwner: LifecycleOwner,
-    modifier: Modifier = Modifier
-) {
-    Column (
-        modifier = modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(10.dp ),
-
-    ) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            val permissionsState = rememberMultiplePermissionsState(
-                listOf(
-                    Manifest.permission.POST_NOTIFICATIONS,
-                    Manifest.permission.INTERNET
-                )
-            )
-
-            if (permissionsState.allPermissionsGranted) {
-                Midi2LinkControls(modifier)
-                MainScreen(lifecycleOwner, modifier)
-            } else {
-                Text("Notification permission is required so this app can continue to run in the background")
-                Text("Internet permission is required so this app can communicate with Ableton Link devices")
-                Button(onClick = { permissionsState.launchMultiplePermissionRequest() }) {
-                    Text("Request permissions")
-                }
-            }
-        } else {
-            // Notification permissions not required until TIRAMISU
-            Midi2LinkControls(modifier)
-            MainScreen(lifecycleOwner, modifier)
-        }
-    }
-}
-
-
-
-/*
-0
-
-I asked myself the same question recently, and big thanks to Larry Schiefer’s comment for giving me the idea that checking if a service is running is the wrong approach.
-
-"It is different, but not unworkable. The typical pattern is for your app (e.g. Activity) to always start your Service and the service knows its own state. If it is already running, it can simply ignore the new start request (or use it to stimulate an update, if needed.) As long as this is not happening constantly, the overhead involved with calling startService should be negligible.
-
-
-
-If you have a running Foreground Service and want to get an instance of it, you don’t check all running services or try to get an instance from Android (that was my first thought too). Instead, you just start your Foreground Service and bind to it anytime you start/resume your main activity.
-
-Here’s how:
-
-1. Start and bind to the service in your Activity
-
-val intent = Intent(this, YourForegroundService::class.java)
-startForegroundService(intent)
-bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
-This makes sure the service is always running and bound when your app is active.
-
-2. Handle service state inside onStartCommand
-
-override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-    ...
-    isServiceRunning = true
-    return START_STICKY
-}
-This way, you don’t start your Foreground Service twice.
-
-With this approach, you will always have one instance of your Foreground Service along with a bind to call your service methods. Hope that helps!
- */
-
-
-@Composable
-fun Midi2LinkControls(modifier: Modifier = Modifier) {
-    val context = LocalContext.current
-
-    // TODO remember state of the service, and show/hide buttons accordingly.
-
-    Text( "MIDI Input", fontWeight = FontWeight.Bold)
-
-    Button(onClick = {
-        val action = ForegroundService.Action.START.toString()
-        manageForegroundService(context, action)
-    }) {
-        Text(text = "Start MIDI Service")
-    }
-    Button(onClick = {
-        val action = ForegroundService.Action.STOP.toString()
-        manageForegroundService(context, action)
-    }) {
-        Text(text = "Stop MIDI Service")
-    }
-}
-
-@Composable
-fun MainScreen(lifecycleOwner: LifecycleOwner, modifier: Modifier = Modifier){
-    // TODO: Move to a ViewModel
-    // TODO: use rememberSaveable
-
-    var inputPortOpen: Boolean by remember { mutableStateOf(false) }
-
-    var songBpm: Int by remember { mutableIntStateOf(0) }
-
-    var bpmValid: Boolean by remember { mutableStateOf(false) }
-
-    var songStarted: Boolean by remember { mutableStateOf(false) }
-
-    var tempo: Int by remember { mutableIntStateOf(0)  }
-    var phase: Int by remember { mutableIntStateOf(0)  }
-
-
-    MidiRepository.midiInputIsConnected.observe(lifecycleOwner) { inputPortOpen = it }
-
-    MidiRepository.midiBpm.observe(lifecycleOwner) { songBpm = it }
-
-    MidiRepository.midiBpmIsValid.observe(lifecycleOwner) { bpmValid = it }
-
-    MidiRepository.midiIsPlaying.observe(lifecycleOwner) { songStarted = it }
-
-    // TODO: is there a jetpack object to display boolean states
-    Text( "Input Port Connected: " + if (inputPortOpen) "Yes" else "No")
-
-    Text("Beats Per Minute: $songBpm")
-
-    Text( "BPM Valid: " + if (bpmValid) "Yes" else "No")
-
-    Text( "Song Started: " + if (songStarted) "Yes" else "No")
-
-    AbletonLinkScreen(
-        isRunning = songStarted,
-        curTempo = tempo,
-        curPhase = phase,
-        onTempoRefresh = { tempo = it },
-        onPhaseRefresh = { phase = it },
-        onRunStateChange = { songStarted = it },
-    )
-
-}
-
-@Composable
-private fun AbletonLinkScreen(
-    isRunning: Boolean,
-    curTempo: Int,
-    curPhase: Int,
-    onTempoRefresh: (Int) -> Unit,
-    onPhaseRefresh: (Int) -> Unit,
-    onRunStateChange: (Boolean) -> Unit,
-    modifier: Modifier = Modifier,
-
-    ) {
-    Column (
-        modifier = modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(10.dp )
-    )
-    {
-        Text("Ableton Link", fontWeight = FontWeight.Bold)
-
-//        Button(
-//            onClick= {
-//                val tempo = AbletonLinkWrapper.getTempo()
-//                onTempoRefresh(tempo) }
-//        ) {
-//            Text("Refresh Song Tempo")
-//        }
-//        Text("Current Tempo: $curTempo")
-//
-//        Button(
-//            onClick= {
-//                val phase = AbletonLinkWrapper.getPhase()
-//                onPhaseRefresh(phase)
-//            }
-//        ) {
-//            Text("Refresh Song Phase")
-//        }
-//        Text("Current Phase: $curPhase")
-//
-//
-//        Button(
-//            onClick = {
-//                onRunStateChange(!isRunning)
-//                AbletonLinkWrapper.setEnabled(true)
-//            }
-//        ) {
-//            Text(if (isRunning) "Stop Link" else "Start Link")
-//        }
-
-    }
-
-}

@@ -1,4 +1,4 @@
-package com.dkxl.midi2link.ableton
+package com.dkxl.midi2link.link
 
 import android.util.Log
 

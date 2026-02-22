@@ -1,8 +1,10 @@
-package com.dkxl.midi2link.midi
+package com.dkxl.midi2link.services
 
 import android.media.midi.MidiDeviceService
 import android.media.midi.MidiDeviceStatus
 import android.media.midi.MidiReceiver
+import com.dkxl.midi2link.midi.MidiRepository
+import com.dkxl.midi2link.midi.MidiTempoParser
 import com.mobileer.miditools.MidiFramer
 import java.io.IOException
 

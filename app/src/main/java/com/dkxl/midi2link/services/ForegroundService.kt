@@ -1,14 +1,15 @@
-package com.dkxl.midi2link
+package com.dkxl.midi2link.services
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
-import com.dkxl.midi2link.ableton.LinkWrapper
+import com.dkxl.midi2link.R
+import com.dkxl.midi2link.link.LinkWrapper
 import com.dkxl.midi2link.midi.MidiRepository
-import kotlin.jvm.java
 
 class ForegroundService(
     private val abletonLink: LinkWrapper = LinkWrapper(),
@@ -58,11 +59,12 @@ class ForegroundService(
     }
 
     private fun createNotificationChannel() {
-        val serviceChannel = NotificationChannel(channelId,
+        val serviceChannel = NotificationChannel(
+            channelId,
             "MIDI 2 Link Service Channel",
             NotificationManager.IMPORTANCE_DEFAULT
         )
-        val manager = getSystemService(NotificationManager::class.java)
+        val manager = Context.getSystemService(NotificationManager::class.java)
         manager.createNotificationChannel(serviceChannel)
     }
 

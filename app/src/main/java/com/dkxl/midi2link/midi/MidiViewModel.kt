@@ -1,9 +1,7 @@
-package com.dkxl.midi2link.ui.screens
+package com.dkxl.midi2link.midi
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.dkxl.midi2link.midi.MidiRepository
-
 
 class MidiViewModel : ViewModel() {
 

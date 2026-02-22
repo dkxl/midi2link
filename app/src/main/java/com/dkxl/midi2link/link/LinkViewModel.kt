@@ -1,9 +1,7 @@
-package com.dkxl.midi2link.ui.screens
+package com.dkxl.midi2link.link
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.dkxl.midi2link.ableton.LinkRepository
-
 
 class LinkViewModel : ViewModel() {
 
