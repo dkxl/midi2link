@@ -12,13 +12,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LifecycleOwner
-import com.dkxl.midi2link.ForegroundServiceControls
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun Midi2LinkMain(
+fun PermissionsScreen(
     lifecycleOwner: LifecycleOwner,
     modifier: Modifier = Modifier
 ) {
@@ -37,7 +36,7 @@ fun Midi2LinkMain(
             )
 
             if (permissionsState.allPermissionsGranted) {
-                ForegroundServiceControls(modifier)
+                ServiceControlScreen(modifier)
                 MainScreen(lifecycleOwner, modifier)
             } else {
                 Text("Notification permission is required so this app can continue to run in the background")
@@ -48,7 +47,7 @@ fun Midi2LinkMain(
             }
         } else {
             // Notification permissions not required until TIRAMISU
-            ForegroundServiceControls(modifier)
+            ServiceControlScreen(modifier)
             MainScreen(lifecycleOwner, modifier)
         }
     }

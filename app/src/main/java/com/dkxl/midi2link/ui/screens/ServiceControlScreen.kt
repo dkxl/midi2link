@@ -44,7 +44,7 @@ With this approach, you will always have one instance of your Foreground Service
 
 
 @Composable
-fun ForegroundServiceControls(modifier: Modifier = Modifier) {
+fun ServiceControlScreen(modifier: Modifier = Modifier) {
     val context = LocalContext.current
 
     // TODO remember state of the service, and show/hide buttons accordingly.
