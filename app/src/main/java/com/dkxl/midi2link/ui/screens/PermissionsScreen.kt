@@ -11,14 +11,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.LifecycleOwner
+import com.dkxl.midi2link.midi.MidiViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun PermissionsScreen(
-    lifecycleOwner: LifecycleOwner,
+    midiViewModel: MidiViewModel,
     modifier: Modifier = Modifier
 ) {
     Column (
@@ -37,7 +37,7 @@ fun PermissionsScreen(
 
             if (permissionsState.allPermissionsGranted) {
                 ServiceControlScreen(modifier)
-                MainScreen(lifecycleOwner, modifier)
+                MainScreen(midiViewModel, modifier)
             } else {
                 Text("Notification permission is required so this app can continue to run in the background")
                 Text("Internet permission is required so this app can communicate with Ableton Link devices")
@@ -48,7 +48,7 @@ fun PermissionsScreen(
         } else {
             // Notification permissions not required until TIRAMISU
             ServiceControlScreen(modifier)
-            MainScreen(lifecycleOwner, modifier)
+            MainScreen(midiViewModel, modifier)
         }
     }
 }

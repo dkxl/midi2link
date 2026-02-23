@@ -12,6 +12,10 @@ import com.dkxl.midi2link.midi.MidiRepository
 import kotlin.jvm.java
 
 
+/*
+ * Observes the MidiRepository and pushes BPM and Start/Stop changes to Ableton Link peers
+ * TODO: Could be extended to allow Link BPM and playing state to be forwarded to MIDI
+ */
 class ForegroundService(
     private val abletonLink: LinkWrapper = LinkWrapper(),
     private val data: MidiRepository = MidiRepository

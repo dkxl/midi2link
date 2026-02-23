@@ -11,11 +11,13 @@ import java.io.IOException
 class VirtualMidiDeviceService : MidiDeviceService() {
     /*
      * Prepare the chain of message handlers:
-     *  Raw input comes to this service's midiReceiver
+     *  Raw MIDI input comes to this service's midiReceiver
      *    - midiReceiver sends raw data to a MidiFramer
-     *    - midiFramer assembled into complete messages and sends to a MidiDataParser
+     *    - midiFramer assembles into complete messages and sends to MidiTempoParser
      *    - midiTempoParser extracts BPM and song state and sends to the MidiDataRepository
      *  UI elements can observe data changes in the DataRepository
+     * TODO: For testing, could also use MidiDataParser to display MIDI messages in the UI
+     * TODO: Add a MIDI output port; send Ableton tempo and playing state to MIDI
      */
 
     private val midiReceiver: MidiReceiver = MyMidiReceiver()

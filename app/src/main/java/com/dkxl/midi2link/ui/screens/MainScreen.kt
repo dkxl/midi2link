@@ -3,47 +3,34 @@ package com.dkxl.midi2link.ui.screens
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.LifecycleOwner
-import com.dkxl.midi2link.midi.MidiRepository
+import androidx.compose.ui.graphics.Color
+import com.dkxl.midi2link.midi.MidiViewModel
 
 @Composable
-fun MainScreen(lifecycleOwner: LifecycleOwner, modifier: Modifier = Modifier){
-    // TODO: Move to a ViewModel
-    // TODO: use rememberSaveable
+fun MainScreen(viewModel: MidiViewModel, modifier: Modifier = Modifier){
 
-    var inputPortOpen: Boolean by remember { mutableStateOf(false) }
+    val inputPortOpen: Boolean? by viewModel.midiInputIsConnected.observeAsState()
 
-    var songBpm: Int by remember { mutableIntStateOf(0) }
+    val songBpm: Int? by viewModel.midiBpm.observeAsState()
 
-    var bpmValid: Boolean by remember { mutableStateOf(false) }
-
-    var songStarted: Boolean by remember { mutableStateOf(false) }
-
-    var tempo: Int by remember { mutableIntStateOf(0)  }
-    var phase: Int by remember { mutableIntStateOf(0)  }
+    val songStarted: Boolean? by viewModel.midiIsPlaying.observeAsState()
 
 
-    MidiRepository.midiInputIsConnected.observe(lifecycleOwner) { inputPortOpen = it }
+    // tests have to allow for livedata elements to be null
+    if (inputPortOpen == true) {
+        Text( "MIDI Input Connected", color = Color.Green)
+        Text("Beats Per Minute: $songBpm")
+    } else {
+        Text( "MIDI Input Disconnected", color = Color.Gray)
+        Text("Beats Per Minute: $songBpm", color = Color.Gray)
+    }
 
-    MidiRepository.midiBpm.observe(lifecycleOwner) { songBpm = it }
-
-    MidiRepository.midiBpmIsValid.observe(lifecycleOwner) { bpmValid = it }
-
-    MidiRepository.midiIsPlaying.observe(lifecycleOwner) { songStarted = it }
-
-    // TODO: is there a jetpack object to display boolean states
-    Text( "Input Port Connected: " + if (inputPortOpen) "Yes" else "No")
-
-    Text("Beats Per Minute: $songBpm")
-
-    Text( "BPM Valid: " + if (bpmValid) "Yes" else "No")
-
-    Text( "Song Started: " + if (songStarted) "Yes" else "No")
-
-
+    // tests have to allow for livedata elements to be null
+    if (inputPortOpen == true && songStarted == true) {
+        Text( "Play Started", color = Color.Green)
+    } else {
+        Text("Play Stopped", color = Color.Gray)
+    }
 }
