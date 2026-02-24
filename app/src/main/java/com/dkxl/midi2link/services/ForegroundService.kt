@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import com.dkxl.midi2link.R
+import com.dkxl.midi2link.link.LinkRepository
 import com.dkxl.midi2link.link.LinkWrapper
 import com.dkxl.midi2link.midi.MidiRepository
 import kotlin.jvm.java
@@ -14,11 +15,10 @@ import kotlin.jvm.java
 
 /*
  * Observes the MidiRepository and pushes BPM and Start/Stop changes to Ableton Link peers
- * TODO: Could be extended to allow Link BPM and playing state to be forwarded to MIDI
  */
 class ForegroundService(
     private val abletonLink: LinkWrapper = LinkWrapper(),
-    private val data: MidiRepository = MidiRepository
+    private val midiData: MidiRepository = MidiRepository
 ) : Service() {
 
     private val channelId = "Midi2LinkServiceChannel"
@@ -74,19 +74,19 @@ class ForegroundService(
     }
 
     private fun subscribeToLiveData() {
-        data.midiBpm.observeForever {
+        midiData.midiBpm.observeForever {
             // tell Link peers the new BPM when MIDI clock's bpm changes
             abletonLink.setTempo(it)
         }
-        data.midiIsPlaying.observeForever {
+        midiData.midiIsPlaying.observeForever {
             // tell Link peers to start/stop when MIDI says start/stop
             abletonLink.setPlaying(it)
         }
     }
 
     private fun unsubscribeFromLiveData() {
-        data.midiBpm.removeObserver {  }
-        data.midiIsPlaying.removeObserver {  }
+        midiData.midiBpm.removeObserver {  }
+        midiData.midiIsPlaying.removeObserver {  }
     }
 
 
