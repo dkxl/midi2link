@@ -56,7 +56,7 @@ class ForegroundService(
         startForeground(1, notification)
         // how to handle failures?
         subscribeToLiveData()
-        abletonLink.create()
+        abletonLink.create(enable = true)
     }
 
     enum class Action {
