@@ -2,8 +2,7 @@ package com.dkxl.midi2link.midi
 
 import android.media.midi.MidiReceiver
 import com.mobileer.miditools.MidiConstants
-
-
+import kotlin.math.roundToInt
 
 /*
  * A MidiReceiver that calculates current song tempo and song start/stop state,
@@ -69,10 +68,10 @@ class MidiTempoParser(private val dataRepo: MidiRepository ) : MidiReceiver() {
      * For example, for a tempo of 120 BPM, there are 120 quarter notes in every minute, so there
      * are 48 clocks per second (120*24/60).
      * The quarter note interval is 60/120 = 500ms, and the MIDI clock interval is 20.833 ms
-     *
-     * TODO: might need some hysteresis on this to avoid integer rounding causing BPM to oscillate
      */
     private fun calculateBpm(midiClockTimestamp: Long)  {
+
+        val nanosPerMinuteAsDouble = NANOS_PER_MINUTE.toDouble()
 
         val beatIntervalNanoSeconds = midiClockTimestamp - lastBeatTimestamp
         lastBeatTimestamp = midiClockTimestamp
@@ -83,7 +82,10 @@ class MidiTempoParser(private val dataRepo: MidiRepository ) : MidiReceiver() {
             return
         }
 
-        val beatsPerMinute = (NANOS_PER_MINUTE/beatIntervalNanoSeconds).toInt()
+        // Need the division to include a Double, so the result is a Double that can be rounded to
+        // nearest Int; Long divided by Long truncates towards zero so beats per minute could be
+        // unstable if the arrival rate of MIDI clock messages drifts
+        val beatsPerMinute = (nanosPerMinuteAsDouble/beatIntervalNanoSeconds).roundToInt()
         dataRepo.midiBpm.postValue(beatsPerMinute)
     }
 
