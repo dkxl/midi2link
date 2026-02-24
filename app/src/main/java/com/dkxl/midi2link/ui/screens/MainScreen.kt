@@ -17,20 +17,44 @@ fun MainScreen(viewModel: MidiViewModel, modifier: Modifier = Modifier){
 
     val songStarted: Boolean? by viewModel.midiIsPlaying.observeAsState()
 
+    val linkIsOpen: Boolean? by viewModel.linkIsOpen.observeAsState()
+    val linkBpm: Int? by viewModel.linkBpm.observeAsState()
+    val linkIsPlaying: Boolean? by viewModel.linkIsPlaying.observeAsState()
+    val linkNumPeers: Int? by viewModel.linkNumPeers.observeAsState()
+
 
     // tests have to allow for livedata elements to be null
     if (inputPortOpen == true) {
         Text( "MIDI Input Connected", color = Color.Green)
-        Text("Beats Per Minute: $songBpm")
+        Text("MIDI Beats Per Minute: $songBpm")
     } else {
         Text( "MIDI Input Disconnected", color = Color.Gray)
-        Text("Beats Per Minute: $songBpm", color = Color.Gray)
+        Text("MIDI Beats Per Minute: $songBpm", color = Color.Gray)
     }
 
     // tests have to allow for livedata elements to be null
     if (inputPortOpen == true && songStarted == true) {
-        Text( "Play Started", color = Color.Green)
+        Text( "MIDI Play Started", color = Color.Green)
     } else {
-        Text("Play Stopped", color = Color.Gray)
+        Text("MIDI Play Stopped", color = Color.Gray)
     }
+
+    if (linkIsOpen == true) {
+        Text( "Link Session Started", color = Color.Green)
+        Text("Link Beats Per Minute: $linkBpm")
+        Text("Link Peers: $linkNumPeers")
+    } else {
+        Text( "Link Session Disconnected", color = Color.Gray)
+        Text("Link Beats Per Minute: $linkBpm", color = Color.Gray)
+        Text("Link Peers: $linkNumPeers", color = Color.Gray)
+    }
+
+    if (linkIsOpen == true && linkIsPlaying == true) {
+        Text( "Link Play Started", color = Color.Green)
+    } else {
+        Text("Link Play Stopped", color = Color.Gray)
+    }
+
+
+
 }
