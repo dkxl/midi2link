@@ -31,6 +31,7 @@ class LinkWrapper {
     fun create(bpm: Int = DEFAULT_BPM, enable: Boolean = DEFAULT_ENABLE_STATE): Boolean {
         if (handle == 0L) {
             handle = createLinkSession(bpm.toDouble(), enable)
+            LinkRepository.linkIsOpen.postValue(enable)
         }
         return handle != 0L
     }
@@ -44,6 +45,7 @@ class LinkWrapper {
     fun setEnabled(enable: Boolean) {
         if (handle != 0L) {
             setEnabled(handle, enable)
+            LinkRepository.linkIsOpen.postValue(enable)
         }
     }
 
