@@ -1,5 +1,6 @@
 package com.dkxl.midi2link.services
 
+import android.util.Log
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
@@ -75,11 +76,16 @@ class ForegroundService(
 
     private fun subscribeToLiveData() {
         midiData.midiBpm.observeForever {
-            // tell Link peers the new BPM when MIDI clock's bpm changes
-            abletonLink.setTempo(it)
+            // tell Link peers the new BPM if different to the current Link BPM
+            if (abletonLink.getTempo() != it) {
+                Log.d("ForegroundService", "setLinkTempo: $it")
+                abletonLink.setTempo(it)
+            }
+
         }
         midiData.midiIsPlaying.observeForever {
             // tell Link peers to start/stop when MIDI says start/stop
+            Log.d("ForegroundService", "setLinkPlaying: $it")
             abletonLink.setPlaying(it)
         }
     }
