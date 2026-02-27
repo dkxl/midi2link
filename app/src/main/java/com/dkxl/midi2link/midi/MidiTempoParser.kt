@@ -1,5 +1,6 @@
 package com.dkxl.midi2link.midi
 
+import android.util.Log
 import android.media.midi.MidiReceiver
 import com.mobileer.miditools.MidiConstants
 import kotlin.math.roundToInt
@@ -36,14 +37,17 @@ class MidiTempoParser(private val dataRepo: MidiRepository ) : MidiReceiver() {
                 }
 
                 MidiConstants.STATUS_START -> {
+                    Log.d("TempoParser", "MIDI Start received")
                     startSong()
                 }
 
                 MidiConstants.STATUS_CONTINUE -> {
+                    Log.d("TempoParser", "MIDI Continue received")
                     startSong()
                 }
 
                 MidiConstants.STATUS_STOP -> {
+                    Log.d("TempoParser", "MIDI Stop received")
                     stopSong()
                 }
 
