@@ -83,11 +83,11 @@ class LinkWrapper {
     }
 
     // Number of Link peers in the session
-    fun numPeers(): Long {
+    fun numPeers(): Int {
         if (handle != 0L) {
-            return numPeers(handle)
+            return numPeers(handle).toInt()
         }
-        return 0L
+        return 0
     }
 
     // External JNI function signatures to access the Ableton Link SDK

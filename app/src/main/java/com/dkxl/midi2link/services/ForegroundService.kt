@@ -8,11 +8,14 @@ import android.content.Intent
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import com.dkxl.midi2link.R
-import com.dkxl.midi2link.link.LinkRepository
+import com.dkxl.midi2link.link.LinkPoller
 import com.dkxl.midi2link.link.LinkWrapper
 import com.dkxl.midi2link.midi.MidiRepository
+import java.util.Timer
 import kotlin.jvm.java
 
+
+const val LINK_POLL_INTERVAL = 1000L   // 1000ms = 1 sec
 
 /*
  * Observes the MidiRepository and pushes BPM and Start/Stop changes to Ableton Link peers
@@ -23,6 +26,7 @@ class ForegroundService(
 ) : Service() {
 
     private val channelId = "Midi2LinkServiceChannel"
+    private val timer = Timer()
 
     override fun onBind(intent: Intent): IBinder? {
         return null
@@ -42,6 +46,7 @@ class ForegroundService(
     }
 
     override fun onDestroy() {
+        timer.cancel()
         abletonLink.setEnabled(false)
         unsubscribeFromLiveData()
         super.onDestroy()
@@ -58,6 +63,9 @@ class ForegroundService(
         // how to handle failures?
         subscribeToLiveData()
         abletonLink.create(enable = true)
+        // start polling the abletonLink instance for state
+        val linkPoller = LinkPoller(abletonLink)
+        timer.schedule(linkPoller, 0, LINK_POLL_INTERVAL)
     }
 
     enum class Action {
@@ -94,6 +102,5 @@ class ForegroundService(
         midiData.midiBpm.removeObserver {  }
         midiData.midiIsPlaying.removeObserver {  }
     }
-
 
 }
