@@ -33,6 +33,14 @@ bool AbletonLinkSession::isPlaying() {
     return link.isEnabled() && link.captureAppSessionState().isPlaying();
 }
 
+void AbletonLinkSession::setStartStopSync(bool bEnable) {
+    link.enableStartStopSync(bEnable);
+}
+
+bool AbletonLinkSession::isStartStopSyncEnabled() {
+    return link.isStartStopSyncEnabled();
+}
+
 void AbletonLinkSession::setPlaying(bool bPlay) {
     auto state = link.captureAppSessionState();
     const auto now = link.clock().micros();

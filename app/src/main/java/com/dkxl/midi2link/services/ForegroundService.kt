@@ -63,6 +63,7 @@ class ForegroundService(
         // how to handle failures?
         subscribeToLiveData()
         abletonLink.create(enable = true)
+        abletonLink.setStartStopSync(enable = true)
         // start polling the abletonLink instance for state
         val linkPoller = LinkPoller(abletonLink)
         timer.schedule(linkPoller, 0, LINK_POLL_INTERVAL)

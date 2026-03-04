@@ -139,4 +139,32 @@ Java_com_dkxl_midi2link_link_LinkWrapper_numPeers(JNIEnv *env, jobject me, jlong
     }
 }
 
+JNIEXPORT void JNICALL
+Java_com_dkxl_midi2link_link_LinkWrapper_setStartStopSync(JNIEnv *env, jobject thiz, jlong handle,
+                                                          jboolean enable) {
+    try {
+        auto *pLinkSession = (AbletonLinkSession *) handle;
+        pLinkSession->setStartStopSync(enable);
+    } catch (const std::exception &e) {
+        throwJavaException(env, "java/lang/RuntimeException", e.what());
+    } catch (...) {
+        throwJavaException(env, "java/lang/Error", "Unknown C++ exception occurred");
+    }
+}
+
+JNIEXPORT jboolean JNICALL
+Java_com_dkxl_midi2link_link_LinkWrapper_isStartStopSyncEnabled(JNIEnv *env, jobject thiz,
+                                                                jlong handle) {
+    try {
+        auto *pLinkSession = (AbletonLinkSession *) handle;
+        return (pLinkSession != nullptr) && pLinkSession->isStartStopSyncEnabled();
+    } catch (const std::exception &e) {
+        throwJavaException(env, "java/lang/RuntimeException", e.what());
+        return false;
+    } catch (...) {
+        throwJavaException(env, "java/lang/Error", "Unknown C++ exception occurred");
+        return false;
+    }
+}
+
 } // extern

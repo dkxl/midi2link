@@ -63,11 +63,23 @@ class LinkWrapper {
         return 0
     }
 
+    // Peer timeline start/stop synchronisation
+    fun setStartStopSync(enable: Boolean) {
+        if (handle != 0L) {
+            setStartStopSync(handle, enable)
+        }
+    }
+
+    fun isStartStopSyncEnable() : Boolean {
+        return handle != 0L && isStartStopSyncEnabled(handle)
+    }
+
     // Is the timeline playing
     fun isPlaying() : Boolean {
         return handle != 0L && isPlaying(handle)
     }
 
+    // tell peers to start playing (only sent if startStopSync is enabled)
     fun setPlaying(play: Boolean) {
         if (handle != 0L) {
             setPlaying(handle, play)
@@ -99,6 +111,8 @@ class LinkWrapper {
     private external fun setTempo(handle: Long, bpm: Double)
     private external fun getTempo(handle: Long): Double
 
+    private external fun setStartStopSync(handle: Long, enable: Boolean)
+    private external fun isStartStopSyncEnabled(handle: Long) : Boolean
     private external fun setPlaying(handle: Long, play: Boolean)
     private external fun isPlaying(handle: Long) : Boolean
 
