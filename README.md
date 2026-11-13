@@ -14,6 +14,15 @@ Based on my niche use case, I only implemented tempo (BPM), song start, and song
 And the interface is currently unidirectional only - the app listens for messages from other Ableton Link nodes, 
 but it does not currently do anything with them. But you should be able to add bidirectional communication if you need it for your show.
 
+## Dependencies
+
+This project uses the Ableton Link SDK to provide the low level access to Ableton Link peers.
+
+Download the SDK from 	https://github.com/Ableton/link.git,  and edit `cpp/CMakeLists.txt` to link to it.
+
+If you would like to incorporate the Ableton Link SDK into a proprietary software application, contact <link-devs@ableton.com>
+
+See `https://github.com/Ableton/link.git/LICENSE` for details
 
 
 

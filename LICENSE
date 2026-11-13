@@ -1,0 +1,46 @@
+
+# Midi2Link License
+
+Midi2Link - allow MIDI apps to communicate with Ableton Link Peers
+Copyright (C) <2026>  <David Harrold>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://gnu.org>.
+
+==================================================================
+
+Note that the Ableton Link SDK dependency used by this project is licensed
+separately. If you would like to incorporate the Ableton Link SDK into a proprietary
+software application, contact <link-devs@ableton.com>
+
+==================================================================
+
+# Ableton Link SDK License
+
+Copyright 2016, Ableton AG, Berlin. All rights reserved.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+If you would like to incorporate Link into a proprietary software application,
+please contact <link-devs@ableton.com>.
